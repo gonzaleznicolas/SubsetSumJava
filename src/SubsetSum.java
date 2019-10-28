@@ -36,15 +36,38 @@ public class SubsetSum {
 		weightsArrayList.toArray(weights);
 		
 		SubsetSum sm = new SubsetSum(weights, W);
-		sm.findOpt();
-		System.out.println(Arrays.deepToString(sm.opt));
-		System.out.println(sm.opt[sm.weights.length()][sm.W]);
-		
+		sm.findSolution();
 	}
 	
 	public SubsetSum(Integer[] weights, Integer W){
 		this.weights = new OneIndexArray(weights);
 		this.W = W;
+	}
+	
+	public void findSolution(){
+		findOpt();
+		
+		ArrayList<Integer> solution = findSolutionHelper(weights.length(), W);
+		
+		System.out.println("The optimal solution is: "+solution);
+		System.out.println("The optimal solution's weight is: "+opt[weights.length()][W]);
+		System.out.println("The opt array:\n"+Arrays.deepToString(opt));
+	}
+	
+	// i: find the solution for the input w1 - wi
+	// w: where the weight limit is w
+	public ArrayList<Integer> findSolutionHelper(int i, int w){
+		if ( i == 0 || w == 0)
+			return new ArrayList<Integer>();
+		else if(weights.get(i) > w)
+			return findSolutionHelper(i-1, w);
+		else if ( opt[i-1][w] > weights.get(i) + opt[i-1][w - weights.get(i)])
+			return findSolutionHelper(i-1, w);
+		else{
+			ArrayList<Integer> sol = findSolutionHelper(i-1, w - weights.get(i));
+			sol.add(weights.get(i));
+			return sol;
+		}
 	}
 	
 	public void findOpt(){
