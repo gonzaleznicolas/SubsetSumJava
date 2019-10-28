@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class SubsetSum {
 	
 	private Integer[][] opt;
-	private Integer[] weights;
+	private OneIndexArray weights;
 	private Integer W; // weight limit
 	
 	public static void main(String[] args){
@@ -37,17 +37,28 @@ public class SubsetSum {
 		
 		SubsetSum sm = new SubsetSum(weights, W);
 		sm.findOpt();
-		System.out.println(Arrays.toString(weights));
+		System.out.println(Arrays.deepToString(sm.opt));
+		System.out.println(sm.opt[sm.weights.length()][sm.W]);
 		
 	}
 	
 	public SubsetSum(Integer[] weights, Integer W){
-		this.weights = weights;
+		this.weights = new OneIndexArray(weights);
 		this.W = W;
 	}
 	
 	public void findOpt(){
+		opt = new Integer[weights.length()+1] [W+1];
 		
+		for(int i = 0; i <= weights.length(); i++){
+			for( int w = 0; w <= W; w++){
+				if (i == 0 || w == 0)
+					opt[i] [w] = 0;
+				else if (weights.get(i) > w)
+					opt[i][w] = opt[i-1][w];
+				else
+					opt[i][w] = Math.max(opt[i-1][w], weights.get(i) + opt[i-1][w - weights.get(i)]);
+			}
+		}
 	}
-	
 }
